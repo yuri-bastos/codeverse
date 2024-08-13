@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
+using TMPro;
 
 public class SnappingSocket : MonoBehaviour
 {
@@ -42,7 +43,7 @@ public class SnappingSocket : MonoBehaviour
         {
             Color color;
             ColorUtility.TryParseHtmlString("#00FF00", out color);
-            transform.Find("Base").GetComponent<Renderer>().material.color = color;
+            transform.parent.parent.Find("Text/Type Text/Text").GetComponent<TMP_Text>().color = color;
             Debug.Log("Correct Socket!");
             isCorrect = true;
             SocketFilled.Invoke(true);
@@ -51,7 +52,7 @@ public class SnappingSocket : MonoBehaviour
         {
             Color color;
             ColorUtility.TryParseHtmlString("#FF0000", out color);
-            transform.Find("Base").GetComponent<Renderer>().material.color = color;
+            transform.parent.parent.Find("Text/Type Text/Text").GetComponent<TMP_Text>().color = color;
             Debug.Log("Incorrect Socket!");
             isCorrect = false;
             SocketFilled.Invoke(false);
@@ -62,8 +63,8 @@ public class SnappingSocket : MonoBehaviour
     void removedObject()
     {
         Color color;
-        ColorUtility.TryParseHtmlString("#0047FF", out color);
-        transform.Find("Base").GetComponent<Renderer>().material.color = color;
+        ColorUtility.TryParseHtmlString("#FFFFFF", out color);
+        transform.parent.parent.Find("Text/Type Text/Text").GetComponent<TMP_Text>().color = color;
         Debug.Log("Removed from Socket!");
         SocketEmptied.Invoke(isCorrect);
         isCorrect = false;

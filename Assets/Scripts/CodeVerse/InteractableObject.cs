@@ -56,7 +56,9 @@ public class InteractableObject : MonoBehaviour
         }
         ObjectInfoPanel = GameObject.Instantiate(HoverInfoPrefab, ThisTransform);
         ObjectInfoPanel.transform.rotation = Quaternion.Slerp(ObjectInfoPanel.transform.rotation, mainCamera.transform.rotation, 1);
-        ObjectInfoPanel.transform.Find("Title").GetComponent<TMP_Text>().text = ObjectName;
+        ObjectInfoPanel.transform.localScale = new Vector3(0.003f, 0.003f, 0.003f);
+        ObjectInfoPanel.transform.position = new Vector3(ThisTransform.position.x, ThisTransform.position.y + 0.5f,ThisTransform.position.z);
+        //ObjectInfoPanel.transform.Find("Title").GetComponent<TMP_Text>().text = ObjectName;
         ObjectInfoPanel.transform.Find("Info").GetComponent<TMP_Text>().text = ObjectDescription;
     }
 

@@ -2,15 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using TMPro;
 
 public class VariableTypes : ILevelType
 {
     #region Fields
     [SerializeField]
-    private List<SnappingSocket> sockets = new List<SnappingSocket>(){ };
+    private List<SnappingSocket> sockets = new List<SnappingSocket>() { };
+    [SerializeField]
+    private TMP_Text objectText;
+
+    [SerializeField]
+    private TMP_Text lifeText;
     #endregion
 
     #region Variables
+    public int life = 3;
+
     public int completedSockets = 0;
     public int totalSockets = 0;
     private int correctSockets = 0;
@@ -18,6 +26,7 @@ public class VariableTypes : ILevelType
 
     #region Events
     public UnityEvent _onVictory = new UnityEvent();
+    public UnityEvent _onDefeat = new UnityEvent();
     public UnityEvent<int> _onStart = new UnityEvent<int>();
     public UnityEvent onVictory
     {
@@ -26,6 +35,11 @@ public class VariableTypes : ILevelType
     public UnityEvent<int> onStart
     {
         get { return _onStart; }
+    }
+
+    public UnityEvent onDefeat
+    {
+        get { return _onDefeat; }
     }
     #endregion
 
@@ -39,17 +53,31 @@ public class VariableTypes : ILevelType
             socket.SocketEmptied.AddListener((isCorrect) => decrementSockets(isCorrect));
         });
         _onStart.Invoke(1);
+
+        objectText.text = $"Objetos: {correctSockets} / {totalSockets}";
     }
 
     void incrementSockets(bool isCorrect)
     {
         completedSockets++;
-        if(isCorrect)
+        if (isCorrect)
         {
             correctSockets++;
         }
-        if(correctSockets == totalSockets)
+        else
         {
+            Debug.Log("Errou!");
+            life--;
+            lifeText.text = $"Vidas: {life}";
+            if (life == 0)
+            {
+                onDefeat.Invoke();
+            }
+        }
+        objectText.text = $"Objetos: {correctSockets} / {totalSockets}";
+        if (correctSockets == totalSockets)
+        {
+            objectText.text = $"Vitoria!";
             _onVictory.Invoke();
         }
     }
@@ -57,9 +85,10 @@ public class VariableTypes : ILevelType
     void decrementSockets(bool isCorrect)
     {
         completedSockets--;
-        if(isCorrect)
+        if (isCorrect)
         {
             correctSockets--;
         }
+        objectText.text = $"Objetos: {correctSockets} / {totalSockets}";
     }
 }

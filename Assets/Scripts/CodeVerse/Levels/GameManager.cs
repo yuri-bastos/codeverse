@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class GameManager : MonoBehaviour
     {
         level.onStart.AddListener((levelNo) => { currentModule = levelNo; });
         level.onVictory.AddListener(onLevelFinish);
+        level.onDefeat.AddListener(restartModule);
     }
 
     // Update is called once per frame
@@ -24,12 +26,17 @@ public class GameManager : MonoBehaviour
 
     void loadMainMenu()
     {
-        SceneController.Instance.LoadScene("MainMenu");
+        SceneManager.LoadScene("MainMenu");
     }
 
     void loadModuleScene(int moduleToLoad)
     {
-        SceneController.Instance.LoadScene($"Module_{moduleToLoad}");
+        SceneManager.LoadScene($"Module_{moduleToLoad}");
+    }
+
+    void restartModule()
+    {
+        SceneManager.LoadScene($"Module_{currentModule}");
     }
 
     void onLevelFinish()
