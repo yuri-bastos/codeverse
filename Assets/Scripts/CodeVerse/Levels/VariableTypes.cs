@@ -89,7 +89,7 @@ public class VariableTypes : ILevelType
             if(levelMode == "life") {
                 lifeText.text = $"Vidas: {life}";
             }
-            if (life == 0 && levelMode == "life")
+            if (life == -1 && levelMode == "life")
             {
                 finish(false);
             }

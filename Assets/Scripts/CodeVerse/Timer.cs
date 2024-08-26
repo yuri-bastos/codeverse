@@ -12,8 +12,8 @@ public class Timer : MonoBehaviour
 
     #region Variables
     float elapsedTime = 0f;
-    float maxTime = 480f;
-    float availableTime = 480f;
+    float maxTime = 300f;
+    float availableTime = 300f;
     private bool shouldBeIncrementing = false;
     private string levelMode = "free";
 
