@@ -12,30 +12,59 @@ public class Timer : MonoBehaviour
 
     #region Variables
     float elapsedTime = 0f;
+    float maxTime = 480f;
+    float availableTime = 480f;
     private bool shouldBeIncrementing = false;
+    private string levelMode = "free";
+
     #endregion
 
     private void Start()
     {
-        level.onVictory.AddListener(stopTimer);
         elapsedTime = 0f;
-        shouldBeIncrementing = true;
     }
 
     void Update()
     {
-        if(shouldBeIncrementing)
+        if (shouldBeIncrementing)
         {
             elapsedTime += Time.deltaTime;
-            int minutes = Mathf.FloorToInt(elapsedTime / 60);
-            int seconds = Mathf.FloorToInt(elapsedTime % 60);
+            if (levelMode == "time")
+            {
+                availableTime = maxTime - elapsedTime;
+                int minutes = Mathf.FloorToInt(availableTime / 60);
+                int seconds = Mathf.FloorToInt(availableTime % 60);
+                timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
 
-            timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+                if (availableTime <= 0f)
+                {
+                    shouldBeIncrementing = false;
+                    level.finish(false);
+                }
+            }
+            else
+            {
+                int minutes = Mathf.FloorToInt(elapsedTime / 60);
+                int seconds = Mathf.FloorToInt(elapsedTime % 60);
+                timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+            }
+
+
         }
     }
 
-    void stopTimer()
+    public void setMode(string mode)
+    {
+        levelMode = mode;
+        shouldBeIncrementing = true;
+    }
+
+    public string stopTimer()
     {
         shouldBeIncrementing = false;
+        int minutes = Mathf.FloorToInt(elapsedTime / 60);
+        int seconds = Mathf.FloorToInt(elapsedTime % 60);
+        string result = string.Format("{0:00}:{1:00}", minutes, seconds);
+        return result;
     }
 }

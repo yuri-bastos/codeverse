@@ -12,6 +12,7 @@ public class GameStartMenu : MonoBehaviour
 
     [Header("Main Menu Buttons")]
     public Button startButton;
+    public Button continueButton;
     public Button optionButton;
     public Button aboutButton;
     public Button quitButton;
@@ -25,6 +26,7 @@ public class GameStartMenu : MonoBehaviour
 
         //Hook events
         startButton.onClick.AddListener(StartGame);
+        continueButton.onClick.AddListener(HideAll);
         optionButton.onClick.AddListener(EnableOption);
         aboutButton.onClick.AddListener(EnableAbout);
         quitButton.onClick.AddListener(QuitGame);

@@ -7,6 +7,10 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField]
     public int currentModule = 0;
+    [SerializeField]
+    public VictoryAndDefeat victoryPanel;
+    [SerializeField]
+    public VictoryAndDefeat defeatPanel;
 
     public VariableTypes level;
 
@@ -14,17 +18,11 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         level.onStart.AddListener((levelNo) => { currentModule = levelNo; });
-        level.onVictory.AddListener(onLevelFinish);
-        level.onDefeat.AddListener(restartModule);
+        level.onVictory.AddListener((result) => {onLevelVictory(result);});
+        level.onDefeat.AddListener((result) => {onLevelDefeat(result);});
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    void loadMainMenu()
+    public void loadMainMenu()
     {
         SceneManager.LoadScene("MainMenu");
     }
@@ -34,13 +32,20 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene($"Module_{moduleToLoad}");
     }
 
-    void restartModule()
+    public void restartModule()
     {
         SceneManager.LoadScene($"Module_{currentModule}");
     }
 
-    void onLevelFinish()
+    void onLevelVictory(string result)
     {
         Debug.Log($"Level {currentModule} finished!");
+        victoryPanel.Initialize(result);
+    }
+
+    void onLevelDefeat(string result)
+    {
+        Debug.Log($"Level {currentModule} finished!");
+        defeatPanel.Initialize(result);
     }
 }

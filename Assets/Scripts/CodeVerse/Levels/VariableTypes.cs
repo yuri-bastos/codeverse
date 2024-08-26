@@ -14,6 +14,12 @@ public class VariableTypes : ILevelType
 
     [SerializeField]
     private TMP_Text lifeText;
+
+    [SerializeField]
+    public string levelMode = "free";
+
+    public Timer timer;
+
     #endregion
 
     #region Variables
@@ -25,19 +31,19 @@ public class VariableTypes : ILevelType
     #endregion
 
     #region Events
-    public UnityEvent _onVictory = new UnityEvent();
-    public UnityEvent _onDefeat = new UnityEvent();
     public UnityEvent<int> _onStart = new UnityEvent<int>();
-    public UnityEvent onVictory
-    {
-        get { return _onVictory; }
-    }
+    public UnityEvent<string> _onVictory = new UnityEvent<string>();
+    public UnityEvent<string> _onDefeat = new UnityEvent<string>();
     public UnityEvent<int> onStart
     {
         get { return _onStart; }
     }
+    public UnityEvent<string> onVictory
+    {
+        get { return _onVictory; }
+    }
 
-    public UnityEvent onDefeat
+    public UnityEvent<string> onDefeat
     {
         get { return _onDefeat; }
     }
@@ -53,8 +59,20 @@ public class VariableTypes : ILevelType
             socket.SocketEmptied.AddListener((isCorrect) => decrementSockets(isCorrect));
         });
         _onStart.Invoke(1);
+        lifeText.text = "";
 
         objectText.text = $"Objetos: {correctSockets} / {totalSockets}";
+    }
+
+    public void changeMode(string mode)
+    {
+        levelMode = mode;
+        timer.setMode(mode);
+        if (mode == "life") {
+            lifeText.text = $"Vidas: {life}";
+        } else {
+            lifeText.text = "";
+        }
     }
 
     void incrementSockets(bool isCorrect)
@@ -68,17 +86,19 @@ public class VariableTypes : ILevelType
         {
             Debug.Log("Errou!");
             life--;
-            lifeText.text = $"Vidas: {life}";
-            if (life == 0)
+            if(levelMode == "life") {
+                lifeText.text = $"Vidas: {life}";
+            }
+            if (life == 0 && levelMode == "life")
             {
-                onDefeat.Invoke();
+                finish(false);
             }
         }
         objectText.text = $"Objetos: {correctSockets} / {totalSockets}";
         if (correctSockets == totalSockets)
         {
             objectText.text = $"Vitoria!";
-            _onVictory.Invoke();
+            finish(true);
         }
     }
 
@@ -90,5 +110,19 @@ public class VariableTypes : ILevelType
             correctSockets--;
         }
         objectText.text = $"Objetos: {correctSockets} / {totalSockets}";
+    }
+    
+    public void finish(bool isVictory)
+    {
+        var time = timer.stopTimer();
+        var errors = 3 - life;
+        string result = $"{time}\n - {errors} erros";
+        if (isVictory)
+        {
+            onVictory.Invoke(result);
+        }
+        else {
+            onDefeat.Invoke(result);
+        }
     }
 }
